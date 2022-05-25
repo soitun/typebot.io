@@ -32,6 +32,12 @@ COPY --from=builder /app/apps/${SCOPE}/package.json ./package.json
 COPY --from=builder /app/apps/${SCOPE}/.next/standalone ./
 COPY --from=builder /app/apps/${SCOPE}/.next/static ./.next/static
 RUN apt-get -qy update && apt-get -qy install openssl
+
+COPY entrypoint.sh ./
+COPY ${SCOPE}-entrypoint.sh ./
+RUN chmod +x ./${SCOPE}-entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ./${SCOPE}-entrypoint.sh
+
 EXPOSE 3000
 ENV PORT 3000
-CMD ["node", "server.js"]
